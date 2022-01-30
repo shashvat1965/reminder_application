@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Reminders extends AppCompatActivity {
     ListView reminders;
@@ -51,8 +52,13 @@ public class Reminders extends AppCompatActivity {
         reminders.setAdapter(reminderArray);
     }
     public void back(View view){
-        Intent i2 = new Intent(Reminders.this,MainActivity.class);
+        Intent i2 = new Intent(Reminders.this, MainActivity.class);
         startActivity(i2);
-        finish();
+    }
+
+    public void deleteAll(View view){
+        databaseHelper.deleteAll();
+        showAllReminders(databaseHelper);
+        Toast.makeText(this, "deleted all reminders", Toast.LENGTH_SHORT).show();
     }
 }

@@ -2,9 +2,15 @@ package com.example.reminderapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,14 +21,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.util.Locale;
+import java.util.Random;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.time.Instant;
 
 public class MainActivity extends AppCompatActivity {
     Button Time, ViewAll, Add, Date;
@@ -30,7 +32,10 @@ public class MainActivity extends AppCompatActivity {
     TextView t_date, t_time;
     ArrayAdapter reminderArray;
     String formattedDate, formattedTime, newString;
-    int hour,minute,year,month,day,second;
+    int hour, minute, year, month, day, second, k;
+    long ok;
+    Calendar calendar= Calendar.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +44,19 @@ public class MainActivity extends AppCompatActivity {
         ViewAll = (Button) findViewById(R.id.button3);
         Add = (Button) findViewById(R.id.button2);
         Time = (Button) findViewById(R.id.button6);
-        Date = (Button) findViewById(R.id.button7);
         EventName = (EditText) findViewById(R.id.editTextTextPersonName);
         t_time  = (TextView) findViewById(R.id.textView2);
         t_date = (TextView) findViewById(R.id.textView3);
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "ok";
+            String desc = "ok";
+            NotificationChannel channel = new NotificationChannel("ok",name, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(desc);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
 
     }
 
@@ -53,13 +67,15 @@ public class MainActivity extends AppCompatActivity {
                 hour = selectedHour;
                 minute = selectedMinute;
                 second = 00;
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(0,0,0,hour,minute,0);
+                calendar.set(Calendar.HOUR_OF_DAY,hour);
+                calendar.set(Calendar.MINUTE,minute);
+                calendar.set(Calendar.MILLISECOND,000);
+                calendar.set(Calendar.SECOND,00);
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss.sss");
                 SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm");
                 formattedTime = sdf2.format(calendar.getTime());
-                String time = sdf.format(calendar.getTime());
-                t_time.setText(formattedTime);
+                t_time.setText(String.format(Locale.getDefault(),"%02d:%02d",hour,minute));
+
 
             }
         };
@@ -67,13 +83,10 @@ public class MainActivity extends AppCompatActivity {
         timePickerDialog.setTitle("select time");
         timePickerDialog.show();
     }
-
     public void Date(View view){
-        Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year2, int month2, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
                 calendar.set(year2, month2, dayOfMonth);
                 year = year2;
                 month = month2;
@@ -88,19 +101,33 @@ public class MainActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+
     public void Add(View view){
-        if(t_time.getText().toString()!="Time" && t_date.getText().toString()!="Date"){
-            ReminderFormat reminder = new ReminderFormat(-1,EventName.getText().toString(), t_date.getText().toString(),t_time.getText().toString());
+        if(!t_time.getText().toString().equals("Time")){
+            Random random = new Random();
+            int y = random.nextInt(2147483647);
+            ReminderFormat reminder = new ReminderFormat(-1,EventName.getText().toString(),t_time.getText().toString(), y, t_date.getText().toString(),Long.toString(calendar.getTimeInMillis()));
             Database dataBaseHelper = new Database(MainActivity.this);
             long epoch = System.currentTimeMillis();
-
             boolean success = dataBaseHelper.addOne(reminder);
+            ok = calendar.getTimeInMillis();
+            int kk2 = (int) (ok/100000);
             if(success==true){
-                Toast.makeText(MainActivity.this, "Success = " + success,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Success = "+success,Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
             }
+            Intent intent = new Intent(MainActivity.this, Broadcast.class);
+            intent.putExtra("event name",reminder.getEventName());
+            intent.putExtra("notif id",reminder.getNotifID());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), y, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, ok, pendingIntent);
+
+
+
+
         }
         else{
             Toast.makeText(this, "Enter Date and Time", Toast.LENGTH_SHORT).show();
@@ -111,14 +138,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this,Reminders.class);
         startActivity(intent);
 
-    }
-    public void trying(View view){
-        Calendar calOne = Calendar.getInstance();
-        int dayOfYear = calOne.get(Calendar.DAY_OF_YEAR);
-        int year = calOne.get(Calendar.YEAR);
-        Calendar calTwo = new GregorianCalendar(year, month, day);
-        int day = calTwo.get(Calendar.DAY_OF_YEAR);
-        int total_days = day - dayOfYear;
     }
 
 

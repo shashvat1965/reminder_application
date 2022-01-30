@@ -2,8 +2,11 @@ package com.example.reminderapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,9 +16,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class Editing extends AppCompatActivity {
@@ -23,13 +26,15 @@ public class Editing extends AppCompatActivity {
     TextView showTime, showDate;
     Database databaseHelper;
     int year,month,day,hour2,minute2;
+    String formattedDate2;
+    Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.popup);
-        showDate = (TextView) findViewById(R.id.textView4);
+        setContentView(R.layout.editing);
         showTime = (TextView) findViewById(R.id.textView3);
+        showDate = (TextView) findViewById(R.id.textView);
         databaseHelper = new Database(Editing.this);
     }
 
@@ -37,28 +42,34 @@ public class Editing extends AppCompatActivity {
         Intent intent = getIntent();
         ReminderFormat reminder = (ReminderFormat) intent.getSerializableExtra("reminder");
         databaseHelper.deleteOne(reminder);
-        Toast.makeText(Editing.this, "deleted", Toast.LENGTH_SHORT).show();
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent myIntent = new Intent(getApplicationContext(), Broadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), reminder.getNotifID(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(Editing.this, "deleted reminder", Toast.LENGTH_SHORT).show();
     }
 
     public void back(View v){
-        Intent i = new Intent(Editing.this,Reminders.class);
+        Intent i = new Intent(Editing.this, Reminders.class);
         startActivity(i);
     }
 
 
     public void Date2(View view) {
-        final Calendar calendar = Calendar.getInstance();
-        year = calendar.get(calendar.YEAR);
-        month = calendar.get(calendar.MONTH);
-        day = calendar.get(calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(Editing.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                showDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+            public void onDateSet(DatePicker view, int year2, int month2, int dayOfMonth) {
+                calendar.set(year2, month2, dayOfMonth);
+                year = year2;
+                month = month2;
+                day = dayOfMonth;
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                formattedDate2 = sdf.format(calendar.getTime());
+                showDate.setText(formattedDate2);
             }
-        }, year, month, day);
-        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 1000);
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,onDateSetListener,year,month,day);
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
         datePickerDialog.show();
     }
 
@@ -70,6 +81,13 @@ public class Editing extends AppCompatActivity {
                 hour2 = selectedHour2;
                 showTime = (TextView) findViewById(R.id.textView3);
                 minute2 = selectedMinute2;
+                int seconds2 = 00;
+                int millis2 = 000;
+                calendar.set(Calendar.HOUR_OF_DAY,selectedHour2);
+                calendar.set(Calendar.MINUTE,selectedMinute2);
+                calendar.set(Calendar.MILLISECOND,000);
+                calendar.set(Calendar.SECOND,00);
+                Intent i = getIntent();
                 showTime.setText(String.format(Locale.getDefault(),"%02d:%02d",hour2,minute2));
 
             }
@@ -78,25 +96,29 @@ public class Editing extends AppCompatActivity {
         timePickerDialog.setTitle("select time");
         timePickerDialog.show();
     }
-    public void timeSave(View view){
-        if(!showTime.getText().toString().equals("Time")){
+    public void saveEdit(View view){
+        if(!showTime.getText().toString().equals("Time") && !showDate.getText().toString().equals("Date")){
             String newTime = showTime.getText().toString();
+            String newDate = showDate.getText().toString();
             Intent intent = getIntent();
             ReminderFormat reminder = (ReminderFormat) intent.getSerializableExtra("reminder");
             databaseHelper.editTime(reminder,newTime);
+            databaseHelper.editDate(reminder,newDate);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent myIntent = new Intent(getApplicationContext(), Broadcast.class);
+            myIntent.putExtra("event name",reminder.getEventName());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), reminder.getNotifID(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(pendingIntent);
+            Intent i2 = new Intent(getApplicationContext(),Broadcast.class);
+            i2.putExtra("notif id", reminder.getNotifID());
+            i2.putExtra("event name",reminder.getEventName());
+            AlarmManager alarmManager1 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getApplicationContext(), reminder.getId(),i2,PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager1.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent1);
             Toast.makeText(this,"working",Toast.LENGTH_SHORT).show();
         }
         else{
             Toast.makeText(this,"Wrong input",Toast.LENGTH_SHORT).show();
-        }
-    }
-    public void dateSave(View view){
-        if(!showDate.getText().toString().equals("Date")){
-            String newDate = showDate.getText().toString();
-            Intent intent = getIntent();
-            ReminderFormat reminder = (ReminderFormat) intent.getSerializableExtra("reminder");
-            databaseHelper.editDate(reminder,newDate);
-            Toast.makeText(this,"working",Toast.LENGTH_SHORT).show();
         }
     }
 
