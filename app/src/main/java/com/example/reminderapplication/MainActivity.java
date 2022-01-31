@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             ok = calendar.getTimeInMillis();
             int kk2 = (int) (ok/100000);
             if(success==true){
-                Toast.makeText(MainActivity.this,"Added a reminder ",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Success = "+success,Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
