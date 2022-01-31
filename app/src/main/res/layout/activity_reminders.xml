@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/dark_grey"
     android:layout_height="match_parent">
 
     <ListView
         android:id="@+id/ReminderList"
-        android:layout_width="409dp"
+        android:layout_width="373dp"
         android:layout_height="650dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -18,7 +20,9 @@
         android:id="@+id/button11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/shadow"
         android:layout_marginStart="48dp"
+        android:textColor="@color/grey"
         android:layout_marginBottom="24dp"
         android:onClick="back"
         android:text="Back"
@@ -30,7 +34,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="88dp"
+        android:textColor="@color/grey"
         android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/shadow"
         android:onClick="deleteAll"
         android:text="Delete ALl"
         app:layout_constraintBottom_toBottomOf="parent"
