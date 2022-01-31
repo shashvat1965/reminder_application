@@ -21,9 +21,7 @@ public class ReminderFormat implements Serializable {
     public String toString() {
         return "name=" + eventName +"\n"+
                 "time=" + time +"\n"+
-                "date=" + date + "\n"+
-                "broadcast= " + broadcast +
-                "notif_id = " + notifID;
+                "date=" + date;
     }
 
     public void Customer(){

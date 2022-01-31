@@ -50,6 +50,8 @@ public class Editing extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), reminder.getNotifID(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
         Toast.makeText(Editing.this, "deleted reminder", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(Editing.this, Reminders.class);
+        startActivity(i);
     }
 
     public void back(View v){
