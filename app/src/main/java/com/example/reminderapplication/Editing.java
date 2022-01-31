@@ -1,5 +1,6 @@
 package com.example.reminderapplication;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
@@ -36,6 +37,8 @@ public class Editing extends AppCompatActivity {
         showTime = (TextView) findViewById(R.id.textView3);
         showDate = (TextView) findViewById(R.id.textView);
         databaseHelper = new Database(Editing.this);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     public void delete(View v){
@@ -115,7 +118,7 @@ public class Editing extends AppCompatActivity {
             AlarmManager alarmManager1 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getApplicationContext(), reminder.getId(),i2,PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager1.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent1);
-            Toast.makeText(this,"working",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"saved edits",Toast.LENGTH_SHORT).show();
         }
         else{
             Toast.makeText(this,"Wrong input",Toast.LENGTH_SHORT).show();

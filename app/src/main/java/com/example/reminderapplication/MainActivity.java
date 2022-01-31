@@ -1,5 +1,6 @@
 package com.example.reminderapplication;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         EventName = (EditText) findViewById(R.id.editTextTextPersonName);
         t_time  = (TextView) findViewById(R.id.textView2);
         t_date = (TextView) findViewById(R.id.textView3);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             ok = calendar.getTimeInMillis();
             int kk2 = (int) (ok/100000);
             if(success==true){
-                Toast.makeText(MainActivity.this,"Success = "+success,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Added a reminder ",Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();

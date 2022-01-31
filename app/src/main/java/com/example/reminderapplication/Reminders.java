@@ -1,5 +1,6 @@
 package com.example.reminderapplication;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +32,8 @@ public class Reminders extends AppCompatActivity {
         back = (Button) findViewById(R.id.button11);
         databaseHelper = new Database(Reminders.this);
         showAllReminders(databaseHelper);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
 
         reminders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
