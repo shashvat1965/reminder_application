@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +20,7 @@ public class Reminders extends AppCompatActivity {
     Database databaseHelper;
     private AlertDialog.Builder dialogBuilder ;
     private AlertDialog dialog ;
-    Button time2, date2, save, back;
+    Button time2, date2, save, back, deleteAll;
     TextView t_time2, t_date2;
     ArrayAdapter<ReminderFormat> reminderArray;
 
@@ -32,8 +33,12 @@ public class Reminders extends AppCompatActivity {
         back = (Button) findViewById(R.id.button11);
         databaseHelper = new Database(Reminders.this);
         showAllReminders(databaseHelper);
+        deleteAll = findViewById(R.id.button10);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Louis_George_Cafe.otf");
+        back.setTypeface(customFont);
+        deleteAll.setTypeface(customFont);
 
 
         reminders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -51,7 +56,7 @@ public class Reminders extends AppCompatActivity {
 
     }
     public void showAllReminders(Database databaseHelper){
-        reminderArray = new ArrayAdapter<ReminderFormat>(Reminders.this, android.R.layout.simple_list_item_1,databaseHelper.getEveryone());
+        reminderArray = new ArrayAdapter<ReminderFormat>(Reminders.this, R.layout.list_view,databaseHelper.getEveryone());
         reminders.setAdapter(reminderArray);
     }
     public void back(View view){

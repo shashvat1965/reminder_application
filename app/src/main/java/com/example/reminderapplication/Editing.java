@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Editing extends AppCompatActivity {
-    Button delete, save_time, time, date, back, save_date;
+    Button delete, saveEdits, time, date, back;
     TextView showTime, showDate;
     Database databaseHelper;
     int year,month,day,hour2,minute2;
@@ -36,9 +37,22 @@ public class Editing extends AppCompatActivity {
         setContentView(R.layout.editing);
         showTime = (TextView) findViewById(R.id.textView3);
         showDate = (TextView) findViewById(R.id.textView);
+        delete = (Button) findViewById(R.id.button5);
+        saveEdits = (Button) findViewById(R.id.button8);
+        back = (Button) findViewById(R.id.button9);
+        time = findViewById(R.id.button);
+        date = findViewById(R.id.button4);
         databaseHelper = new Database(Editing.this);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Louis_George_Cafe.otf");
+        showTime.setTypeface(customFont);
+        showDate.setTypeface(customFont);
+        delete.setTypeface(customFont);
+        time.setTypeface(customFont);
+        back.setTypeface(customFont);
+        saveEdits.setTypeface(customFont);
+        date.setTypeface(customFont);
     }
 
     public void delete(View v){

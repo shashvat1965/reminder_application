@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -45,11 +46,20 @@ public class MainActivity extends AppCompatActivity {
         ViewAll = (Button) findViewById(R.id.button3);
         Add = (Button) findViewById(R.id.button2);
         Time = (Button) findViewById(R.id.button6);
+        Date = (Button) findViewById(R.id.button7);
         EventName = (EditText) findViewById(R.id.editTextTextPersonName);
         t_time  = (TextView) findViewById(R.id.textView2);
         t_date = (TextView) findViewById(R.id.textView3);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Louis_George_Cafe.otf");
+        ViewAll.setTypeface(customFont);
+        Add.setTypeface(customFont);
+        Time.setTypeface(customFont);
+        Date.setTypeface(customFont);
+        EventName.setTypeface(customFont);
+        t_time.setTypeface(customFont);
+        t_date.setTypeface(customFont);
 
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -111,10 +121,8 @@ public class MainActivity extends AppCompatActivity {
             int y = random.nextInt(2147483647);
             ReminderFormat reminder = new ReminderFormat(-1,EventName.getText().toString(),t_time.getText().toString(), y, t_date.getText().toString(),Long.toString(calendar.getTimeInMillis()));
             Database dataBaseHelper = new Database(MainActivity.this);
-            long epoch = System.currentTimeMillis();
             boolean success = dataBaseHelper.addOne(reminder);
             ok = calendar.getTimeInMillis();
-            int kk2 = (int) (ok/100000);
             if(success==true){
                 Toast.makeText(MainActivity.this,"Added an reminder",Toast.LENGTH_SHORT).show();
             }
