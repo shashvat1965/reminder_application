@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss.sss");
                 SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm");
                 formattedTime = sdf2.format(calendar.getTime());
-                t_time.setText(String.format(Locale.getDefault(),"%02d:%02d",hour,minute));
+                t_time.setText(formattedTime);
+                //t_time.setText(String.format(Locale.getDefault(),"%02d:%02d",hour,minute));
 
 
             }

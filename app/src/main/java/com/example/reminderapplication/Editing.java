@@ -107,7 +107,10 @@ public class Editing extends AppCompatActivity {
                 calendar.set(Calendar.MILLISECOND,000);
                 calendar.set(Calendar.SECOND,00);
                 Intent i = getIntent();
-                showTime.setText(String.format(Locale.getDefault(),"%02d:%02d",hour2,minute2));
+                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm");
+                String formattedTime = sdf2.format(calendar.getTime());
+                showTime.setText(formattedTime);
+                //showTime.setText(String.format(Locale.getDefault(),"%02d:%02d",hour2,minute2));
 
             }
         };
