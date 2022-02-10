@@ -10,12 +10,12 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/shadow"
         android:onClick="Time2"
         android:text="Time"
         android:textColor="@color/grey"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -78,12 +78,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="152dp"
-        android:onClick="Date2"
         android:backgroundTint="@color/shadow"
-        android:textColor="@color/grey"
+        android:onClick="Date2"
         android:text="Date"
+        android:textColor="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView

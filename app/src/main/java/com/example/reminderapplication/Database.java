@@ -36,6 +36,8 @@ public class Database extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
+
+
         cv.put(COLUMN_EVENT_NAME, Reminder.getEventName());
         cv.put(COLUMN_TIME, Reminder.getTime() );
         cv.put(COLUMN_NOTIF_ID,Reminder.getNotifID());
