@@ -1,22 +1,14 @@
 package com.example.reminderapplication;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class Broadcast  extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent){
-        int notifID= intent.getIntExtra("notif id",0);
+        int notificationID= intent.getIntExtra("notification id",0);
         String eventName = intent.getStringExtra("event name");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"ok");
         builder.setSmallIcon(R.drawable.ic_launcher_background);
@@ -26,9 +18,8 @@ public class Broadcast  extends BroadcastReceiver {
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setAutoCancel(true);
         Database database = new Database(context);
-        database.deleteTwo(notifID);
+        database.deleteTwo(notificationID);
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
         managerCompat.notify(1,builder.build());
-
     }
 }

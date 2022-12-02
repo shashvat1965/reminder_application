@@ -2,7 +2,6 @@ package com.example.reminderapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
@@ -43,12 +41,8 @@ public class Database extends SQLiteOpenHelper {
         cv.put(COLUMN_NOTIF_ID,Reminder.getNotifID());
         cv.put(COLUMN_DATE,Reminder.getDate());
         cv.put(COLUMN_BROADCAST_ID,Reminder.getBroadcast());
-        int kk = Reminder.getNotifID();
         long insert = db.insert(REMINDER_TABLE, null, cv);
-        if(insert == -1){
-            return false;
-        }
-        else return true;
+        return insert != -1;
     }
 
     @Override
@@ -57,7 +51,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public List<ReminderFormat> getEveryone(){
-        List<ReminderFormat> returnList = new ArrayList<ReminderFormat>();
+        List<ReminderFormat> returnList = new ArrayList<>();
         String query= "SELECT * FROM " + REMINDER_TABLE;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
@@ -74,43 +68,22 @@ public class Database extends SQLiteOpenHelper {
                 returnList.add(reminder);
             } while(cursor.moveToNext());
         }
-        else{
-            // get rekt
-        }
+
 
         cursor.close();
         db.close();
         return returnList;
-    }
-    public String getColumnEventName(String broadcast){
-        String query= "SELECT EVENT_NAME FROM " + REMINDER_TABLE +" WHERE BROADCAST_ID ="+"\""+broadcast+"\"";
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        String eventName = cursor.getString(0);
-        return eventName;
-    }
-    public String getColumnEventName2(int notifID){
-        String query= "SELECT EVENT_NAME FROM " + REMINDER_TABLE +" WHERE NOTIF_ID =" + notifID;
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        String eventName = cursor.getString(1);
-        return eventName;
-    }
-    public int getColumnNotifId(String broadcast){
-        String query= "SELECT NOTIF_ID FROM " + REMINDER_TABLE +" WHERE BROADCAST_ID ="+broadcast;
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        int notifID = cursor.getInt(0);
-        return notifID;
     }
     public boolean deleteOne(ReminderFormat reminder){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + REMINDER_TABLE + " WHERE " + COLUMN_ID + " =" + reminder.getId();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
+            cursor.close();
             return true;
         }
         else{
+            cursor.close();
             return false;
         }
     }
@@ -120,9 +93,11 @@ public class Database extends SQLiteOpenHelper {
         String query = "DELETE FROM " + REMINDER_TABLE + " WHERE " + COLUMN_NOTIF_ID + " =" + notif_id;
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
+            cursor.close();
             return true;
         }
         else{
+            cursor.close();
             return false;
         }
     }
@@ -131,9 +106,11 @@ public class Database extends SQLiteOpenHelper {
         String query = "DELETE FROM "+ REMINDER_TABLE;
         Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst()){
+            cursor.close();
             return true;
         }
         else{
+            cursor.close();
             return  false;
         }
     }
